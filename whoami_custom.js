@@ -92,34 +92,45 @@ function renderWhoCustomGuessHistory(r){
   line.append(answer,verdict);box.append(line);
  });
 }
+function whoCustomPendingForWriter(r,writerId){
+ return Object.entries(r?.whoCustomPending||{}).find(([target,pending])=>
+  pending?.writerId===writerId&&r.whoCustomAssignments?.[writerId]===target
+ )||null;
+}
 function renderWhoCustomJudgePanel(r){
- const panel=$('whoCustomJudgePanel'),assigned=r.whoCustomAssignments?.[myId];
- const pending=assigned?r.whoCustomPending?.[assigned]:null;
- const active=['playing','final_guess','whoami_review'].includes(r.status);
- panel.hidden=!(active&&pending&&pending.writerId===myId);
- const awaiting=$('whoCustomAwaiting');
- const myPending=r.whoCustomPending?.[myId];
+ const panel=$('whoCustomJudgePanel'),alert=$('whoCustomReviewAlert');
+ const match=whoCustomPendingForWriter(r,myId),assigned=match?.[0],pending=match?.[1];
+ const active=['playing','final_guess','whoami_review'].includes(r.status),visible=!!(active&&pending);
+ panel.hidden=!visible;alert.hidden=!visible;
+ const awaiting=$('whoCustomAwaiting'),myPending=r.whoCustomPending?.[myId];
  awaiting.hidden=!active||!myPending;
  if(myPending){
   const judge=(r.gamePlayers?.[myPending.writerId]||r.playerProfiles?.[myPending.writerId])?.name||'เพื่อนที่ตั้งคำ';
   awaiting.textContent='ส่งคำตอบแล้ว · รอ '+judge+' กดตัดสินถูกหรือผิด';
  }
- if(panel.hidden)return;
- const players=gameParticipants(r);
- $('whoCustomJudgeName').textContent=players[assigned]?.name||'เพื่อนของคุณ';
- $('whoCustomJudgeAnswer').textContent=pending.answer;
+ if(!visible)return;
+ const players=gameParticipants(r),sender=players[assigned]?.name||'เพื่อนของคุณ';
+ $('whoCustomJudgeName').textContent=sender;
+ $('whoCustomJudgeAnswer').textContent=String(pending.answer||'');
  $('whoCustomJudgeStatus').textContent='เลือกผลคำตอบเพื่อยืนยันให้เพื่อน · ส่งได้ครั้งเดียว';
+ alert.textContent='📨 '+sender+' ส่งคำตอบมา · กดตรวจ';
  const token=roomId+':'+(r.gamesPlayed||0)+':'+assigned+':'+pending.submittedAt;
  if(token!==lastWhoCustomNoticeToken){
   lastWhoCustomNoticeToken=token;
-  toast('มีคำตอบใหม่จาก '+(players[assigned]?.name||'เพื่อน')+' ให้คุณตรวจ', 'info');
+  toast('มีคำตอบใหม่จาก '+sender+' ให้คุณตรวจ', 'info');
  }
 }
+$('whoCustomReviewAlert').onclick=()=>{
+ const panel=$('whoCustomJudgePanel');
+ if(panel.hidden)return;
+ panel.scrollIntoView({behavior:'smooth',block:'center'});
+ $('whoCustomJudgeCorrect').focus({preventScroll:true});
+};
 async function whoCustomJudge(correct){
  const r=roomState;
  if(!roomId||r?.gameMode!=='whoami_custom'||!['playing','final_guess','whoami_review'].includes(r.status))return;
- const target=r.whoCustomAssignments?.[myId];
- if(!target||!r.whoCustomPending?.[target])return;
+ const target=whoCustomPendingForWriter(r,myId)?.[0];
+ if(!target)return;
  const button=correct?$('whoCustomJudgeCorrect'):$('whoCustomJudgeWrong');
  button.disabled=true;
  try{
@@ -193,6 +204,10 @@ async function whoCustomGuess(){
    r.lastActivityAt=TIMESTAMP();return r;
   },undefined,false);
   if(!result.committed){toast('หมดเวลาหรือคุณเคยส่งคำตอบแล้ว','error');return;}
+  const saved=result.snapshot?.val();
+  if(saved?.whoCustomPending?.[myId]?.writerId!==whoCustomWriterFor(saved,myId)){
+   toast('บันทึกคำตอบแล้ว แต่ตรวจสอบการส่งไปยังคนตั้งโจทย์ไม่ได้ กรุณารีเฟรชหน้าห้อง','error');return;
+  }
   $('guessInput').value='';
   toast('ส่งคำตอบแล้ว · รอคนที่ตั้งคำให้คุณตรวจถูกหรือผิด','success');
  }catch(e){error(e);}finally{button.disabled=false;}
