@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" type="image/webp" href="assets/earthkung-logo.webp">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=who-review-2">
 </head>
 <body>
 <section id="landingCover" class="landing-cover" aria-label="หน้าเปิดเกม Party Game">
@@ -214,6 +214,7 @@
 <section id="whoScreen" class="panel page" hidden>
 <div class="section-head"><div><small>WHO AM I? · GUESS YOUR WORD</small><h2>ฉันคือใคร?</h2></div></div>
 <div id="whoProgress" class="game-stats"></div>
+<button id="whoCustomReviewAlert" type="button" class="who-custom-review-alert" hidden aria-label="มีคำตอบจากเพื่อนรอการตรวจ">📨 มีคำตอบรอตรวจ · กดเปิด</button>
 <div id="whoCustomJudgePanel" class="who-custom-judge-panel" hidden role="status" aria-live="polite">
   <div class="who-custom-judge-heading"><span aria-hidden="true">📨</span><div><small>ANSWER REVIEW · PLEASE DECIDE</small><h3>เพื่อนส่งคำตอบมาให้คุณตรวจ</h3></div></div>
   <p>คำตอบจาก <strong id="whoCustomJudgeName">เพื่อนของคุณ</strong></p>
@@ -290,8 +291,8 @@
  <div id="dialog" class="dialog-backdrop" hidden><div class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="dialogTitle"><h2 id="dialogTitle">ยืนยัน</h2><p id="dialogMessage" class="muted"></p><div class="actions"><button id="dialogCancel" class="btn outline">ยกเลิก</button><button id="dialogYes" class="btn primary">ยืนยัน</button></div></div></div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="script.js"></script>
+<script src="script.js?v=who-review-2"></script>
 <script src="insider.js"></script>
-<script src="whoami_custom.js"></script>
+<script src="whoami_custom.js?v=who-review-2"></script>
 </body>
 </html>
