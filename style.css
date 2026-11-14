@@ -696,3 +696,10 @@ body.landing-transitioning .shell{
 .who-custom-guess-item.pending{border-color:rgba(255,224,160,.35)}
 .who-custom-guess-item.pending b{color:var(--gold)}
 @media(max-width:530px){.who-custom-judge-panel{padding:17px}.who-custom-judge-actions{grid-template-columns:1fr}.who-custom-judge-heading h3{font-size:17px}}
+
+/* Persistent human-review alert: remains visible even when the author is scrolled down */
+.who-custom-review-alert{position:fixed;bottom:22px;right:22px;z-index:1200;max-width:min(92vw,420px);min-height:54px;padding:14px 19px;border:1px solid rgba(255,229,163,.75);border-radius:15px;color:#fff4ce;background:linear-gradient(115deg,#44304f,#2d425d);box-shadow:0 15px 45px rgba(0,0,0,.5);font:700 14px/1.45 Prompt,sans-serif;text-align:left;cursor:pointer;animation:who-review-attention 2.2s ease-in-out infinite}
+.who-custom-review-alert:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+@keyframes who-review-attention{0%,100%{box-shadow:0 15px 35px rgba(0,0,0,.46)}50%{box-shadow:0 14px 40px rgba(255,211,125,.25)}}
+@media(max-width:550px){.who-custom-review-alert{left:15px;right:15px;bottom:15px;width:calc(100% - 30px);max-width:none}}
+@media(prefers-reduced-motion:reduce){.who-custom-review-alert{animation:none}}
